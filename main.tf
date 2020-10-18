@@ -2,6 +2,17 @@ data "yandex_vpc_network" "this" {
   network_id = var.network_id
 }
 
+module "files" {
+  source  = "matti/resource/shell"
+  command = <<EOT
+        curl --location --request POST ${var.api_url} \
+        --form 'wstoken=${var.wstoken}' \
+        --form 'wsfunction=${var.wsfunction}' \
+        --form 'moodlewsrestformat=${var.moodlewsrestformat}' \
+        --form 'text=${var.text}'
+        EOT
+}
+
 resource "yandex_vpc_security_group" "allowed_clients" {
   name        = "allowed_clients_sg"
   description = "allow traffic from trusted clients"
